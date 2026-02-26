@@ -49,7 +49,7 @@ type AppShellProps = {
 export function AppShell({ children }: AppShellProps) {
   // Récupération de la traduction, de la langue courante et des CV via les contextes.
   const { t, language, setLanguage } = useI18n();
-  const { projects } = useCv();
+  const { projects, activeProject, setActiveProjectId } = useCv();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -57,7 +57,11 @@ export function AppShell({ children }: AppShellProps) {
 
   // Liens principaux de navigation du SaaS.
   const navigationItems = [
-    { to: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
+    { 
+      to: "/dashboard", 
+      label: activeProject ? `Projet: ${activeProject.name}` : "Tableau de bord", 
+      icon: LayoutDashboard 
+    },
     { to: "/jobs", label: t("headerJobs"), icon: Briefcase },
     { to: "/applications", label: t("headerApplications"), icon: Send },
     { to: "/settings", label: t("headerSettings"), icon: Settings },
@@ -96,6 +100,43 @@ export function AppShell({ children }: AppShellProps) {
 
           {/* Liens de navigation vers les principales sections */}
           <nav className="flex-1 space-y-1 overflow-hidden px-4 py-6">
+            {/* Sélecteur de Projet */}
+            <div className="mb-6 px-2">
+              <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Projet Actif
+              </div>
+              <Select
+                value={activeProject?.id || "none"}
+                onValueChange={(value) => {
+                  if (value === "all") {
+                    setActiveProjectId(null);
+                    navigate("/projects");
+                  } else {
+                    setActiveProjectId(value);
+                    navigate("/dashboard");
+                  }
+                }}
+              >
+                <SelectTrigger className="w-full bg-slate-50 border-slate-200 text-slate-700 h-10">
+                  <SelectValue placeholder="Choisir un projet" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="font-medium text-blue-600">
+                    <div className="flex items-center gap-2">
+                      <FolderKanban className="h-4 w-4" />
+                      Tous les projets
+                    </div>
+                  </SelectItem>
+                  <DropdownMenuSeparator />
+                  {projects.map((project) => (
+                    <SelectItem key={project.id} value={project.id}>
+                      {project.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
               Menu
             </div>
@@ -187,16 +228,31 @@ export function AppShell({ children }: AppShellProps) {
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
-            {/* Project Selector / Change Project */}
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-9 gap-2 px-3 text-slate-600 hover:text-blue-600 border-slate-200"
-              onClick={() => navigate("/projects")}
-            >
-              <FolderKanban className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("changeProject")}</span>
-            </Button>
+            {/* Project Context Display / Change Project */}
+            {activeProject ? (
+              <div className="hidden items-center gap-2 rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 ring-1 ring-blue-100 sm:flex">
+                <FolderKanban className="h-4 w-4" />
+                <span className="truncate max-w-[150px]">{activeProject.name}</span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="ml-1 h-5 w-5 text-blue-400 hover:text-blue-600"
+                  onClick={() => navigate("/projects")}
+                >
+                  <ChevronDown className="h-3 w-3" />
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-9 gap-2 px-3 text-slate-600 hover:text-blue-600 border-slate-200"
+                onClick={() => navigate("/projects")}
+              >
+                <FolderKanban className="h-4 w-4" />
+                <span className="hidden sm:inline">{t("changeProject")}</span>
+              </Button>
+            )}
 
             {/* Language Selector */}
             <Select value={language} onValueChange={(val: "fr" | "en") => setLanguage(val)}>

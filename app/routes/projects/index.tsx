@@ -29,7 +29,7 @@ import { useI18n } from "~/i18n/i18n";
 import { Badge } from "~/components/ui/badge";
 
 export default function ProjectsIndex() {
-  const { projects, addProject, removeProject } = useCv();
+  const { projects, addProject, removeProject, setActiveProjectId } = useCv();
   const { t } = useI18n();
   const navigate = useNavigate();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false);
@@ -41,6 +41,8 @@ export default function ProjectsIndex() {
       addProject(newProject);
       setNewProject({ name: "", description: "" });
       setIsCreateDialogOpen(false);
+      // Redirection automatique vers le dashboard du nouveau projet (géré dans CvContext via setActiveProjectId)
+      navigate("/dashboard");
     }
   };
 
@@ -52,8 +54,8 @@ export default function ProjectsIndex() {
   };
 
   const handleSelectProject = (projectId: string) => {
-    // In a real app, you might set the active project in context/localStorage
-    navigate(`/dashboard?projectId=${projectId}`);
+    setActiveProjectId(projectId);
+    navigate("/dashboard");
   };
 
   return (

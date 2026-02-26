@@ -1,4 +1,5 @@
 // Page de détail d'un projet listant ses CVs.
+import * as React from "react";
 import { useParams, Link, useNavigate } from "react-router";
 import { AppShell } from "~/components/layout/app-shell";
 import { useCv } from "~/context/cv-context";
@@ -43,9 +44,23 @@ import {
 
 export default function ProjectDetail() {
   const { id } = useParams();
-  const { getProject, removeProject, addCvToProject, removeCvFromProject } = useCv();
+  const { 
+    getProject, 
+    removeProject, 
+    addCvToProject, 
+    removeCvFromProject,
+    activeProjectId,
+    setActiveProjectId
+  } = useCv();
   const navigate = useNavigate();
   const project = getProject(id || "");
+
+  // Sincronisation du projet actif
+  React.useEffect(() => {
+    if (id && id !== activeProjectId) {
+      setActiveProjectId(id);
+    }
+  }, [id, activeProjectId, setActiveProjectId]);
 
   if (!project) {
     return (

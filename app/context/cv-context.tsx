@@ -38,6 +38,9 @@ type CvContextValue = {
   
   jobOffers: JobOffer[];
   applications: Application[];
+  activeProjectId: string | null;
+  setActiveProjectId: (id: string | null) => void;
+  activeProject: UserProject | undefined;
 };
 
 const CvContext = createContext<CvContextValue | undefined>(undefined);
@@ -102,16 +105,25 @@ export function CvProvider({ children }: { children: React.ReactNode }) {
   const [projects, setProjects] = useState<UserProject[]>(initialProjects);
   const [jobOffers] = useState<JobOffer[]>(initialJobOffers);
   const [applications] = useState<Application[]>([]);
+  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+
+  // Projet actif calculé
+  const activeProject = useMemo(() => 
+    projects.find(p => p.id === activeProjectId),
+  [projects, activeProjectId]);
 
   // Actions sur les projets
   const addProject = (projectData: Omit<UserProject, "id" | "createdAt" | "cvs">) => {
+    const newId = crypto.randomUUID();
     const newProject: UserProject = {
       ...projectData,
-      id: crypto.randomUUID(),
+      id: newId,
       createdAt: new Date().toISOString().split('T')[0],
       cvs: [],
     };
     setProjects(prev => [...prev, newProject]);
+    // On peut optionnellement sélectionner le nouveau projet directement
+    setActiveProjectId(newId);
   };
 
   const removeProject = (id: string) => {
@@ -153,7 +165,10 @@ export function CvProvider({ children }: { children: React.ReactNode }) {
     removeCvFromProject,
     jobOffers,
     applications,
-  }), [projects, jobOffers, applications]);
+    activeProjectId,
+    setActiveProjectId,
+    activeProject,
+  }), [projects, jobOffers, applications, activeProjectId, activeProject]);
 
   return <CvContext.Provider value={value}>{children}</CvContext.Provider>;
 }

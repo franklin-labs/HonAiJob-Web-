@@ -57,19 +57,37 @@ export default function Dashboard() {
 
 function DashboardContent() {
   const { t } = useI18n();
-  const { projects, getProject, addCvToProject, removeCvFromProject } = useCv();
+  const { 
+    projects, 
+    getProject, 
+    addCvToProject, 
+    removeCvFromProject, 
+    activeProjectId, 
+    setActiveProjectId 
+  } = useCv();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const projectId = searchParams.get("projectId");
+  const projectIdParam = searchParams.get("projectId");
   
-  // If no projectId, take the first project or redirect to projects selection
-  const project = projectId ? getProject(projectId) : (projects.length > 0 ? projects[0] : null);
+  // Sincronisation du projet actif si passé en paramètre
+  React.useEffect(() => {
+    if (projectIdParam && projectIdParam !== activeProjectId) {
+      setActiveProjectId(projectIdParam);
+    }
+  }, [projectIdParam, activeProjectId, setActiveProjectId]);
+
+  // Si pas de projectIdParam, on utilise activeProjectId du contexte
+  const currentProjectId = projectIdParam || activeProjectId;
+  const project = currentProjectId ? getProject(currentProjectId) : (projects.length > 0 ? projects[0] : null);
 
   React.useEffect(() => {
     if (!project && projects.length === 0) {
       navigate("/projects");
+    } else if (!currentProjectId && projects.length > 0) {
+      // Si aucun projet n'est sélectionné mais qu'il en existe, on sélectionne le premier
+      setActiveProjectId(projects[0].id);
     }
-  }, [project, projects, navigate]);
+  }, [project, projects, navigate, currentProjectId, setActiveProjectId]);
 
   if (!project) {
     return (
