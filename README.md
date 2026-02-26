@@ -1,87 +1,95 @@
-# Welcome to React Router!
+# Honaijob Frontend
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Application de gestion de candidatures intelligente, construite avec React Router v7, Tailwind CSS v4, et Shadcn UI.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## 🚀 Fonctionnalités Clés
 
-## Features
+- **Routing Moderne** : Utilisation de React Router v7 avec loaders, actions et nested routes.
+- **Interface Utilisateur** : Design système inspiré de Stripe, propre et accessible (WCAG 2.1 AA).
+- **Composants Réutilisables** : Basés sur Radix UI et stylisés avec Tailwind CSS.
+- **Gestion d'État** : Context API pour la gestion locale des données (CVs, Offres, Candidatures).
+- **Internationalisation** : Support i18n intégré.
+- **Responsive Design** : Adapté à tous les écrans (Mobile First).
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## 🛠️ Stack Technique
 
-## Getting Started
+- **Framework** : [React Router v7](https://reactrouter.com/) (anciennement Remix)
+- **Langage** : TypeScript
+- **Styles** : [Tailwind CSS v4](https://tailwindcss.com/)
+- **Composants UI** : [Shadcn UI](https://ui.shadcn.com/) (Radix UI)
+- **Icônes** : [Lucide React](https://lucide.dev/)
+- **Build Tool** : Vite
 
-### Installation
+## 📦 Installation et Démarrage
 
-Install the dependencies:
+1. **Cloner le dépôt**
+   ```bash
+   git clone <url-du-repo>
+   cd frontend-honaijob
+   ```
 
-```bash
-npm install
-```
+2. **Installer les dépendances**
+   ```bash
+   pnpm install
+   # ou
+   npm install
+   ```
 
-### Development
+3. **Lancer le serveur de développement**
+   ```bash
+   pnpm dev
+   # ou
+   npm run dev
+   ```
+   L'application sera accessible sur `http://localhost:5173`.
 
-Start the development server with HMR:
+4. **Lancer les tests**
+   ```bash
+   pnpm typecheck
+   # Pour les tests unitaires (à venir)
+   # pnpm test
+   ```
 
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+## 🏗️ Structure du Projet
 
 ```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+app/
+├── components/         # Composants UI et Layouts
+│   ├── layout/         # Layouts globaux (AppShell, etc.)
+│   └── ui/             # Composants de base (Button, Card, etc.)
+├── context/            # Contextes React (CvContext, AuthContext)
+├── i18n/               # Configuration i18n et traductions
+├── lib/                # Utilitaires (cn, formatters)
+├── routes/             # Routes de l'application (Pages)
+│   ├── _index.tsx      # Page d'accueil / Login
+│   ├── dashboard.tsx   # Tableau de bord
+│   ├── jobs.tsx        # Recherche d'emploi (avec Loaders)
+│   └── ...
+├── root.tsx            # Point d'entrée de l'application React
+└── routes.ts           # Configuration des routes (File System Routing)
 ```
 
-## Styling
+## 🎨 Design System
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+Le design suit une approche "Stripe-inspired" :
+- **Couleurs** : Palette principale bleue (`#635bff`), fonds gris clair (`slate-50`), surfaces blanches avec ombres douces.
+- **Typographie** : Inter (via Google Fonts).
+- **Espacement** : Grille de 4px (Tailwind standard).
+- **Arrondi** : `rounded-xl` pour les cartes et conteneurs principaux.
 
----
+## 🔒 Sécurité et Accessibilité
 
-Built with ❤️ using React Router.
+- **Authentification** : Simulation d'authentification Google (OAuth flow placeholder).
+- **Accessibilité** :
+  - Contraste suffisant pour le texte.
+  - Navigation au clavier sur tous les éléments interactifs.
+  - Labels ARIA pour les icônes et boutons sans texte.
+
+## 🤝 Contribution
+
+1. Forker le projet
+2. Créer une branche (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+# HonAiJob-Web-
