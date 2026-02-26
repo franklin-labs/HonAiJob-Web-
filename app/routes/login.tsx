@@ -1,4 +1,5 @@
 // Page d'accueil et de connexion (Landing Page)
+import * as React from "react";
 import type { Route } from "./+types/login";
 import { useNavigate, Link } from "react-router";
 import { Button } from "~/components/ui/button";
@@ -44,11 +45,12 @@ export default function LandingPage() {
   const { t } = useI18n();
 
   const handleLogin = () => {
-    navigate("/dashboard");
+    navigate("/projects");
   };
 
   const handleStart = () => {
-    navigate("/offer/checkout");
+    // For now, let's redirect to projects to follow the user's flow
+    navigate("/projects");
   };
 
   return (

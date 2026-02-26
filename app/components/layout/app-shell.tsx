@@ -58,7 +58,6 @@ export function AppShell({ children }: AppShellProps) {
   // Liens principaux de navigation du SaaS.
   const navigationItems = [
     { to: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
-    { to: "/projects", label: "Mes Projets", icon: FolderKanban },
     { to: "/jobs", label: t("headerJobs"), icon: Briefcase },
     { to: "/applications", label: t("headerApplications"), icon: Send },
     { to: "/settings", label: t("headerSettings"), icon: Settings },
@@ -188,6 +187,17 @@ export function AppShell({ children }: AppShellProps) {
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
+            {/* Project Selector / Change Project */}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 gap-2 px-3 text-slate-600 hover:text-blue-600 border-slate-200"
+              onClick={() => navigate("/projects")}
+            >
+              <FolderKanban className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("changeProject")}</span>
+            </Button>
+
             {/* Language Selector */}
             <Select value={language} onValueChange={(val: "fr" | "en") => setLanguage(val)}>
               <SelectTrigger className="h-9 w-[100px] border-slate-200 bg-white text-xs font-medium focus:ring-blue-500">
@@ -226,23 +236,6 @@ export function AppShell({ children }: AppShellProps) {
                   <DropdownMenuItem>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Déconnexion</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                   <Button variant="ghost" size="sm" className="h-9 gap-2 px-2 text-slate-700 hover:bg-slate-100">
-                     <span className="text-sm font-medium">{language.toUpperCase()}</span>
-                     <ChevronDown className="h-4 w-4 opacity-50" />
-                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setLanguage("fr")}>
-                    Français
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setLanguage("en")}>
-                    English
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

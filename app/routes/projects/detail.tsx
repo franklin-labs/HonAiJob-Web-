@@ -60,7 +60,7 @@ export default function ProjectDetail() {
     );
   }
 
-  const handleAddCv = (event: React.FormEventHandler<HTMLFormElement>) => {
+  const handleAddCv = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const name = String(formData.get("name") || "").trim();

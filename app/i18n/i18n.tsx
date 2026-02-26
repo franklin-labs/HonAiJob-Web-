@@ -30,7 +30,20 @@ type TranslationKey =
   | "myCvsTitle"
   | "jobOffersTitle"
   | "applicationsTitle"
-  | "settingsTitle";
+  | "settingsTitle"
+  | "projectsTitle"
+  | "newProject"
+  | "projectName"
+  | "projectDescription"
+  | "projectDescriptionPlaceholder"
+  | "createProject"
+  | "selectProject"
+  | "changeProject"
+  | "noProjects"
+  | "aiDescriptionNotice"
+  | "crucialForAi"
+  | "openProject"
+  | "backToProjects";
 
 type Dictionary = Record<Language, Record<TranslationKey, string>>;
 
@@ -65,6 +78,19 @@ const dictionary: Dictionary = {
     jobOffersTitle: "Offres d’emploi",
     applicationsTitle: "Candidatures",
     settingsTitle: "Paramètres",
+    projectsTitle: "Mes Projets",
+    newProject: "Nouveau Projet",
+    projectName: "Nom du projet",
+    projectDescription: "Description du projet",
+    projectDescriptionPlaceholder: "Décrivez précisément le type de poste, les technologies, le secteur...",
+    createProject: "Créer le projet",
+    selectProject: "Sélectionnez un projet",
+    changeProject: "Changer de projet",
+    noProjects: "Aucun projet pour le moment",
+    aiDescriptionNotice: "Cette description sera utilisée par notre intelligence artificielle pour identifier les meilleures opportunités pour vous.",
+    crucialForAi: "Crucial pour l'IA",
+    openProject: "Ouvrir le projet",
+    backToProjects: "Retour aux projets",
   },
   en: {
     appName: "Honaijob",
@@ -96,6 +122,19 @@ const dictionary: Dictionary = {
     jobOffersTitle: "Job offers",
     applicationsTitle: "Applications",
     settingsTitle: "Settings",
+    projectsTitle: "My Projects",
+    newProject: "New Project",
+    projectName: "Project Name",
+    projectDescription: "Project Description",
+    projectDescriptionPlaceholder: "Precisely describe the type of position, technologies, sector...",
+    createProject: "Create Project",
+    selectProject: "Select a project",
+    changeProject: "Change project",
+    noProjects: "No projects yet",
+    aiDescriptionNotice: "This description will be used by our AI to identify the best opportunities for you.",
+    crucialForAi: "Crucial for AI",
+    openProject: "Open project",
+    backToProjects: "Back to projects",
   },
 };
 

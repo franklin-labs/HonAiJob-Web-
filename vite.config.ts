@@ -10,6 +10,9 @@ export default defineConfig({
     !process.env.VITEST && reactRouter(),
     tsconfigPaths()
   ].filter(Boolean),
+  resolve: {
+    dedupe: ["react", "react-dom"],
+  },
   test: {
     globals: true,
     environment: "jsdom",

@@ -1,4 +1,5 @@
 // Point d’entrée de l’application : layout HTML, providers globaux et gestion d’erreurs.
+import * as React from "react";
 import {
   isRouteErrorResponse,
   Links,
