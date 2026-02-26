@@ -45,8 +45,22 @@ import {
   Globe,
   DollarSign,
   Zap,
-  Loader2
+  Loader2,
+  AlertTriangle,
+  ExternalLink,
+  Share2,
+  Bookmark
 } from "lucide-react";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
 
 export const meta: Route.MetaFunction = () => [
   { title: "Honaijob – Offres d’emploi" },
@@ -110,6 +124,9 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
   const isSearching = navigation.state === "loading" && navigation.location.pathname === "/jobs";
 
   const [filtersOpen, setFiltersOpen] = useState(true);
+  const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
+  const [isLowMatchAlertOpen, setIsLowMatchAlertOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<any>(null);
 
   // Helper to submit form on change
   const handleFilterChange = (key: string, value: string) => {
@@ -124,6 +141,29 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
     formData.set(key, value);
     
     submit(formData, { method: "get", replace: true });
+  };
+
+  const handleApplyClick = (job: any) => {
+    setSelectedJob(job);
+    if (job.match < 80) {
+      setIsLowMatchAlertOpen(true);
+    } else {
+      setIsApplyDialogOpen(true);
+    }
+  };
+
+  const confirmApply = () => {
+    if (selectedJob) {
+      // Enregistrement de la candidature dans le dashboard (simulation ou API)
+      console.log(`Candidature enregistrée pour ${selectedJob.title} chez ${selectedJob.company}`);
+      
+      // Fermeture du dialogue
+      setIsApplyDialogOpen(false);
+      
+      // Redirection vers le site externe (URL réelle de l'offre si disponible, sinon lien factice)
+      const externalUrl = selectedJob.externalUrl || "https://www.google.com/search?q=" + encodeURIComponent(selectedJob.title + " " + selectedJob.company);
+      window.open(externalUrl, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
@@ -147,6 +187,57 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[280px,1fr]">
+        {/* Dialogues de confirmation et alertes */}
+        <AlertDialog open={isLowMatchAlertOpen} onOpenChange={setIsLowMatchAlertOpen}>
+          <AlertDialogContent className="bg-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2 text-amber-600">
+                <AlertTriangle className="h-5 w-5" />
+                Score de correspondance faible
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-slate-600">
+                Votre profil a un score de {selectedJob?.match}% pour ce poste. Postuler avec un score inférieur à 80% peut réduire vos chances d'être retenu par les systèmes de tri automatique (ATS). 
+                <br /><br />
+                Souhaitez-vous quand même continuer ou préférez-vous optimiser votre CV pour ce projet ?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="border-slate-200">Optimiser mon CV</AlertDialogCancel>
+              <AlertDialogAction 
+                className="bg-amber-600 hover:bg-amber-700 text-white"
+                onClick={() => {
+                  setIsLowMatchAlertOpen(false);
+                  setIsApplyDialogOpen(true);
+                }}
+              >
+                Continuer quand même
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={isApplyDialogOpen} onOpenChange={setIsApplyDialogOpen}>
+          <AlertDialogContent className="bg-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Prêt à postuler ?</AlertDialogTitle>
+              <AlertDialogDescription className="text-slate-600">
+                Vous allez être redirigé vers le site de <strong>{selectedJob?.company}</strong> pour finaliser votre candidature pour le poste de <strong>{selectedJob?.title}</strong>.
+                <br /><br />
+                En cliquant sur "Confirmer", nous enregistrerons cette action comme une candidature effectuée dans votre tableau de bord Honaijob.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="border-slate-200">Annuler</AlertDialogCancel>
+              <AlertDialogAction 
+                className="bg-[#635bff] hover:bg-[#544dc9] text-white"
+                onClick={confirmApply}
+              >
+                Confirmer et postuler
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         {/* Filters Sidebar */}
         <aside className={cn(
           "space-y-6 lg:block",
@@ -355,91 +446,115 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
                       </div>
                     </SheetTrigger>
                     
-                    <SheetContent className="w-full sm:max-w-xl overflow-y-auto">
-                      <SheetHeader className="space-y-4 pb-6 border-b">
-                        <div className="flex items-center gap-4">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 text-xl font-bold text-[#635bff] ring-1 ring-slate-100">
-                            {job.company.substring(0, 2).toUpperCase()}
+                    <SheetContent className="flex flex-col h-full w-full sm:max-w-xl p-0">
+                      <div className="flex-1 overflow-y-auto p-6">
+                        <SheetHeader className="space-y-4 pb-6 border-b text-left">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 text-xl font-bold text-[#635bff] ring-1 ring-slate-100">
+                                {job.company.substring(0, 2).toUpperCase()}
+                              </div>
+                              <div>
+                                <SheetTitle className="text-xl">{job.title}</SheetTitle>
+                                <SheetDescription className="flex items-center gap-2 mt-1 text-base">
+                                  <span className="font-medium text-slate-900">{job.company}</span>
+                                  <span>•</span>
+                                  <span>{job.location}</span>
+                                </SheetDescription>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-[#635bff]">
+                                <Share2 className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-amber-500">
+                                <Bookmark className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
-                          <div>
-                            <SheetTitle className="text-xl">{job.title}</SheetTitle>
-                            <SheetDescription className="flex items-center gap-2 mt-1 text-base">
-                              <span className="font-medium text-slate-900">{job.company}</span>
-                              <span>•</span>
-                              <span>{job.location}</span>
-                            </SheetDescription>
+                          
+                          <div className="flex flex-wrap gap-3">
+                            <Badge className={cn(
+                              "px-3 py-1 text-sm", 
+                              job.match >= 90 ? "bg-emerald-50 text-emerald-700" : 
+                              job.match >= 70 ? "bg-blue-50 text-blue-700" : 
+                              "bg-amber-50 text-amber-700"
+                            )}>
+                              {job.match}% de correspondance
+                            </Badge>
+                            <Badge variant="outline" className="border-slate-200 text-slate-700">
+                              {job.contract === "cdi" ? "CDI" : "Stage"}
+                            </Badge>
+                            <Badge variant="outline" className="border-slate-200 text-slate-700">
+                              Télétravail partiel
+                            </Badge>
                           </div>
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-3">
-                          <Badge className={cn(
-                            "px-3 py-1 text-sm", 
-                            job.match >= 90 ? "bg-emerald-50 text-emerald-700" : 
-                            job.match >= 70 ? "bg-blue-50 text-blue-700" : 
-                            "bg-amber-50 text-amber-700"
-                          )}>
-                            {job.match}% de correspondance
-                          </Badge>
-                          <Badge variant="outline" className="border-slate-200 text-slate-700">
-                            {job.contract === "cdi" ? "CDI" : "Stage"}
-                          </Badge>
-                          <Badge variant="outline" className="border-slate-200 text-slate-700">
-                            Télétravail partiel
-                          </Badge>
-                        </div>
-                      </SheetHeader>
 
-                      <div className="py-6 space-y-8">
-                        <div className="space-y-3">
-                          <h4 className="font-semibold text-slate-900 flex items-center gap-2">
-                            <Briefcase className="h-4 w-4 text-[#635bff]" />
-                            À propos du poste
-                          </h4>
-                          <p className="text-sm text-slate-600 leading-relaxed">
-                            En tant que {job.title} chez {job.company}, vous rejoindrez une équipe passionnée pour travailler sur des projets innovants. Nous recherchons une personne capable de concevoir des interfaces utilisateurs performantes et accessibles.
-                          </p>
-                        </div>
+                          <div className="pt-2">
+                            <Button variant="link" className="p-0 h-auto text-[#635bff] gap-2 text-sm" asChild>
+                              <a href="#" target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="h-4 w-4" />
+                                Voir l'annonce originale sur le site du recruteur
+                              </a>
+                            </Button>
+                          </div>
+                        </SheetHeader>
 
-                        <div className="space-y-3">
-                          <h4 className="font-semibold text-slate-900 flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-[#635bff]" />
-                            Responsabilités
-                          </h4>
-                          <ul className="text-sm text-slate-600 space-y-2 list-disc pl-4">
-                            <li>Développer de nouvelles fonctionnalités avec React et TypeScript</li>
-                            <li>Collaborer avec les designers et les PMs</li>
-                            <li>Optimiser les performances de l'application</li>
-                            <li>Participer aux revues de code et au mentorat</li>
-                          </ul>
-                        </div>
+                        <div className="py-6 space-y-8">
+                          <div className="space-y-3">
+                            <h4 className="font-semibold text-slate-900 flex items-center gap-2">
+                              <Briefcase className="h-4 w-4 text-[#635bff]" />
+                              À propos du poste
+                            </h4>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                              En tant que {job.title} chez {job.company}, vous rejoindrez une équipe passionnée pour travailler sur des projets innovants. Nous recherchons une personne capable de concevoir des interfaces utilisateurs performantes et accessibles.
+                            </p>
+                          </div>
 
-                        <div className="space-y-3">
-                          <h4 className="font-semibold text-slate-900 flex items-center gap-2">
-                            <Zap className="h-4 w-4 text-[#635bff]" />
-                            Pourquoi vous ?
-                          </h4>
-                          <div className="rounded-lg bg-blue-50/50 p-4 border border-blue-100">
-                             <p className="text-sm text-blue-900 mb-2 font-medium">Points forts de votre profil :</p>
-                             <ul className="text-sm text-blue-800 space-y-1">
-                               <li className="flex items-center gap-2">
-                                 <CheckCircle className="h-3 w-3 text-blue-600" />
-                                 Expérience solide en React (Match)
-                               </li>
-                               <li className="flex items-center gap-2">
-                                 <CheckCircle className="h-3 w-3 text-blue-600" />
-                                 Connaissance de Tailwind CSS (Match)
-                               </li>
-                             </ul>
+                          <div className="space-y-3">
+                            <h4 className="font-semibold text-slate-900 flex items-center gap-2">
+                              <CheckCircle className="h-4 w-4 text-[#635bff]" />
+                              Responsabilités
+                            </h4>
+                            <ul className="text-sm text-slate-600 space-y-2 list-disc pl-4">
+                              <li>Développer de nouvelles fonctionnalités avec React et TypeScript</li>
+                              <li>Collaborer avec les designers et les PMs</li>
+                              <li>Optimiser les performances de l'application</li>
+                              <li>Participer aux revues de code et au mentorat</li>
+                            </ul>
+                          </div>
+
+                          <div className="space-y-3">
+                            <h4 className="font-semibold text-slate-900 flex items-center gap-2">
+                              <Zap className="h-4 w-4 text-[#635bff]" />
+                              Pourquoi vous ?
+                            </h4>
+                            <div className="rounded-lg bg-blue-50/50 p-4 border border-blue-100">
+                               <p className="text-sm text-blue-900 mb-2 font-medium">Points forts de votre profil :</p>
+                               <ul className="text-sm text-blue-800 space-y-1">
+                                 <li className="flex items-center gap-2">
+                                   <CheckCircle className="h-3 w-3 text-blue-600" />
+                                   Expérience solide en React (Match)
+                                 </li>
+                                 <li className="flex items-center gap-2">
+                                   <CheckCircle className="h-3 w-3 text-blue-600" />
+                                   Connaissance de Tailwind CSS (Match)
+                                 </li>
+                               </ul>
+                            </div>
                           </div>
                         </div>
                       </div>
 
-                      <SheetFooter className="sticky bottom-0 bg-white pt-4 pb-0 border-t mt-auto">
+                      <SheetFooter className="p-6 bg-white border-t mt-auto shadow-[0_-4px_10px_rgba(0,0,0,0.03)]">
                         <div className="flex w-full gap-3">
-                          <Button variant="outline" className="flex-1 border-slate-200 hover:bg-slate-50 text-slate-700">
+                          <Button variant="outline" className="flex-1 border-slate-200 hover:bg-slate-50 text-slate-700 h-11">
                             Sauvegarder
                           </Button>
-                          <Button className="flex-1 bg-[#635bff] hover:bg-[#544dc9] text-white shadow-md shadow-blue-500/20">
+                          <Button 
+                            className="flex-1 bg-[#635bff] hover:bg-[#544dc9] text-white shadow-md shadow-blue-500/20 h-11"
+                            onClick={() => handleApplyClick(job)}
+                          >
                             Postuler maintenant
                           </Button>
                         </div>
