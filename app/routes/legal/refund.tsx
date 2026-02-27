@@ -1,11 +1,5 @@
-import type { Route } from "./+types/refund";
-import { AlertTriangle, Clock, CheckCircle, FileText, Mail } from "lucide-react";
+import { AlertTriangle, Clock, CheckCircle, Mail } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
-
-export const meta: Route.MetaFunction = () => [
-  { title: "Politique de Remboursement - Honaijob" },
-  { name: "description", content: "Détails de notre garantie satisfait ou remboursé de 7 jours. Procédure et conditions." },
-];
 
 export default function RefundPolicy() {
   return (

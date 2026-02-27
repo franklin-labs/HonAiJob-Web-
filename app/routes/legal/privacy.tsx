@@ -1,12 +1,3 @@
-import type { Route } from "./+types/privacy";
-
-export const meta: Route.MetaFunction = () => {
-  return [
-    { title: "Politique de Confidentialité | Honaijob" },
-    { name: "description", content: "Politique de confidentialité et protection des données personnelles sur Honaijob." },
-  ];
-};
-
 export default function Privacy() {
   return (
     <div className="prose prose-slate max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-blue-600 hover:prose-a:text-blue-500">

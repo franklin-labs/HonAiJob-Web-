@@ -1,10 +1,3 @@
-import type { Route } from "./+types/mentions";
-
-export const meta: Route.MetaFunction = () => [
-  { title: "Mentions Légales - Honaijob" },
-  { name: "description", content: "Informations légales obligatoires concernant l'éditeur et l'hébergeur du site Honaijob." },
-];
-
 export default function LegalMentions() {
   return (
     <article className="prose prose-slate max-w-none lg:prose-lg">

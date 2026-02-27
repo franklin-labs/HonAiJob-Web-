@@ -167,44 +167,55 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
   };
 
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-6 sm:space-y-8 pb-10 sm:pb-8">
       {/* Header Section */}
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between px-1 sm:px-0">
+        <div className="space-y-2 sm:space-y-3">
+          <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl leading-tight">
             {t("jobOffersTitle")}
           </h1>
-          <p className="mt-2 text-base text-slate-500 max-w-2xl">
+          <p className="text-sm sm:text-base lg:text-lg text-slate-500 max-w-2xl font-medium leading-relaxed">
             Découvrez les opportunités qui correspondent le mieux à votre profil et vos compétences.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-           <Button variant="outline" className="hidden sm:flex gap-2" onClick={() => setFiltersOpen(!filtersOpen)}>
+        <div className="flex items-center gap-3">
+           <Button 
+             variant="outline" 
+             className={cn(
+               "flex-1 sm:flex-none gap-2 h-12 sm:h-11 px-6 rounded-2xl sm:rounded-full font-black text-sm transition-all active:scale-[0.97]",
+               filtersOpen ? "bg-slate-100 border-slate-200 text-slate-900" : "bg-white border-slate-200 text-slate-600 hover:text-[#635bff] hover:border-[#635bff]/30"
+             )}
+             onClick={() => setFiltersOpen(!filtersOpen)}
+           >
             <Filter className="h-4 w-4" />
-            Filtres
+            {filtersOpen ? "Masquer les filtres" : "Afficher les filtres"}
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[280px,1fr]">
+      <div className="grid gap-6 sm:gap-8 lg:grid-cols-[300px,1fr]">
         {/* Dialogues de confirmation et alertes */}
         <AlertDialog open={isLowMatchAlertOpen} onOpenChange={setIsLowMatchAlertOpen}>
-          <AlertDialogContent className="bg-white">
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex items-center gap-2 text-amber-600">
-                <AlertTriangle className="h-5 w-5" />
+          <AlertDialogContent className="bg-white rounded-3xl sm:rounded-2xl border-none p-6 sm:p-8 max-w-[90vw] sm:max-w-lg">
+            <AlertDialogHeader className="space-y-4">
+              <div className="mx-auto sm:mx-0 w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center">
+                <AlertTriangle className="h-6 w-6 text-amber-600" />
+              </div>
+              <AlertDialogTitle className="text-xl sm:text-2xl font-black text-slate-900 leading-tight text-center sm:text-left">
                 Score de correspondance faible
               </AlertDialogTitle>
-              <AlertDialogDescription className="text-slate-600">
-                Votre profil a un score de {selectedJob?.match}% pour ce poste. Postuler avec un score inférieur à 80% peut réduire vos chances d'être retenu par les systèmes de tri automatique (ATS). 
+              <AlertDialogDescription className="text-sm sm:text-base text-slate-500 font-medium leading-relaxed text-center sm:text-left">
+                Votre profil a un score de <span className="text-amber-600 font-black">{selectedJob?.match}%</span> pour ce poste. Postuler avec un score inférieur à 80% peut réduire vos chances d'être retenu par les systèmes de tri automatique (ATS). 
                 <br /><br />
                 Souhaitez-vous quand même continuer ou préférez-vous optimiser votre CV pour ce projet ?
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="border-slate-200">Optimiser mon CV</AlertDialogCancel>
+            <AlertDialogFooter className="flex-col sm:flex-row gap-3 mt-8">
+              <AlertDialogCancel className="w-full sm:w-auto h-12 sm:h-11 rounded-2xl sm:rounded-full border-slate-200 font-black text-sm order-2 sm:order-1 active:scale-[0.97] transition-all">
+                Optimiser mon CV
+              </AlertDialogCancel>
               <AlertDialogAction 
-                className="bg-amber-600 hover:bg-amber-700 text-white"
+                className="w-full sm:w-auto h-12 sm:h-11 rounded-2xl sm:rounded-full bg-amber-600 hover:bg-amber-700 text-white font-black text-sm order-1 sm:order-2 active:scale-[0.97] transition-all"
                 onClick={() => {
                   setIsLowMatchAlertOpen(false);
                   setIsApplyDialogOpen(true);
@@ -217,19 +228,26 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
         </AlertDialog>
 
         <AlertDialog open={isApplyDialogOpen} onOpenChange={setIsApplyDialogOpen}>
-          <AlertDialogContent className="bg-white">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Prêt à postuler ?</AlertDialogTitle>
-              <AlertDialogDescription className="text-slate-600">
-                Vous allez être redirigé vers le site de <strong>{selectedJob?.company}</strong> pour finaliser votre candidature pour le poste de <strong>{selectedJob?.title}</strong>.
+          <AlertDialogContent className="bg-white rounded-3xl sm:rounded-2xl border-none p-6 sm:p-8 max-w-[90vw] sm:max-w-lg">
+            <AlertDialogHeader className="space-y-4">
+              <div className="mx-auto sm:mx-0 w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center">
+                <Briefcase className="h-6 w-6 text-[#635bff]" />
+              </div>
+              <AlertDialogTitle className="text-xl sm:text-2xl font-black text-slate-900 leading-tight text-center sm:text-left">
+                Prêt à postuler ?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-sm sm:text-base text-slate-500 font-medium leading-relaxed text-center sm:text-left">
+                Vous allez être redirigé vers le site de <strong className="text-slate-900">{selectedJob?.company}</strong> pour finaliser votre candidature pour le poste de <strong className="text-slate-900">{selectedJob?.title}</strong>.
                 <br /><br />
                 En cliquant sur "Confirmer", nous enregistrerons cette action comme une candidature effectuée dans votre tableau de bord Honaijob.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="border-slate-200">Annuler</AlertDialogCancel>
+            <AlertDialogFooter className="flex-col sm:flex-row gap-3 mt-8">
+              <AlertDialogCancel className="w-full sm:w-auto h-12 sm:h-11 rounded-2xl sm:rounded-full border-slate-200 font-black text-sm order-2 sm:order-1 active:scale-[0.97] transition-all">
+                Annuler
+              </AlertDialogCancel>
               <AlertDialogAction 
-                className="bg-[#635bff] hover:bg-[#544dc9] text-white"
+                className="w-full sm:w-auto h-12 sm:h-11 rounded-2xl sm:rounded-full bg-[#635bff] hover:bg-[#544dc9] text-white font-black text-sm order-1 sm:order-2 shadow-lg shadow-blue-500/20 active:scale-[0.97] transition-all"
                 onClick={confirmApply}
               >
                 Confirmer et postuler
@@ -240,13 +258,13 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
 
         {/* Filters Sidebar */}
         <aside className={cn(
-          "space-y-6 lg:block",
-          filtersOpen ? "block" : "hidden"
+          "space-y-6 lg:block transition-all duration-300",
+          filtersOpen ? "block animate-in fade-in slide-in-from-top-4" : "hidden"
         )}>
-          <div className="rounded-xl bg-white p-5 shadow-md sticky top-4 border-none">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-semibold text-slate-900">Filtres</h2>
-              <Button variant="ghost" size="sm" className="h-8 text-xs text-slate-500" onClick={() => {
+          <div className="rounded-[2rem] sm:rounded-3xl bg-white p-6 sm:p-7 shadow-sm lg:sticky lg:top-4 border-none ring-1 ring-slate-100">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-lg font-black text-slate-900 uppercase tracking-widest text-[10px] sm:text-xs">Filtres</h2>
+              <Button variant="ghost" size="sm" className="h-9 px-4 rounded-xl text-xs font-black text-slate-400 hover:text-[#635bff] hover:bg-blue-50 transition-colors" onClick={() => {
                 const formData = new FormData();
                 formData.set("q", "");
                 formData.set("location", "all");
@@ -258,89 +276,77 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
               </Button>
             </div>
             
-            <Form method="get" className="space-y-5" onChange={(e) => {
-                // Auto-submit for input changes if needed, but for text input usually wait for enter or debounce
-                // For select components, we handle onValueChange separately below
-            }}>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-700">Recherche</label>
-                <div className="relative">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
+            <Form method="get" className="space-y-6">
+              <div className="space-y-2.5">
+                <label className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Recherche</label>
+                <div className="relative group">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-[#635bff] transition-colors" />
                   <Input 
                     name="q"
                     placeholder="Poste, entreprise..." 
-                    className="pl-9 bg-slate-50 border-slate-200 focus:bg-white" 
+                    className="pl-11 bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-[#635bff] text-sm h-12 sm:h-11 rounded-2xl sm:rounded-xl transition-all font-medium" 
                     defaultValue={filters.q}
-                    onChange={(e) => {
-                        // Debounce could be added here
-                        // For now, let's submit on Enter or use a button, 
-                        // or auto-submit with delay? 
-                        // Simple approach: user presses Enter.
-                    }}
                   />
                 </div>
               </div>
 
-              <Separator />
-
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-700">Localisation</label>
+              <div className="space-y-2.5">
+                <label className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Localisation</label>
                 <Select 
                   name="location" 
                   value={filters.location} 
                   onValueChange={(val) => handleFilterChange("location", val)}
                 >
-                  <SelectTrigger className="bg-slate-50 border-slate-200">
+                  <SelectTrigger className="bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-[#635bff] text-sm h-12 sm:h-11 rounded-2xl sm:rounded-xl transition-all font-medium">
                     <SelectValue placeholder="Toutes" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Toutes les villes</SelectItem>
+                  <SelectContent className="rounded-2xl border-none shadow-xl">
+                    <SelectItem value="all" className="rounded-xl">Toutes les villes</SelectItem>
                     {locations.map((loc) => (
-                      <SelectItem key={loc} value={loc}>{loc}</SelectItem>
+                      <SelectItem key={loc} value={loc} className="rounded-xl">{loc}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-700">Type de contrat</label>
+              <div className="space-y-2.5">
+                <label className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Type de contrat</label>
                 <Select 
                   name="contract" 
                   value={filters.contract} 
                   onValueChange={(val) => handleFilterChange("contract", val)}
                 >
-                  <SelectTrigger className="bg-slate-50 border-slate-200">
+                  <SelectTrigger className="bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-[#635bff] text-sm h-12 sm:h-11 rounded-2xl sm:rounded-xl transition-all font-medium">
                     <SelectValue placeholder="Tous" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tous les contrats</SelectItem>
-                    <SelectItem value="cdi">CDI</SelectItem>
-                    <SelectItem value="internship">Stage</SelectItem>
-                    <SelectItem value="freelance">Freelance</SelectItem>
+                  <SelectContent className="rounded-2xl border-none shadow-xl">
+                    <SelectItem value="all" className="rounded-xl">Tous les contrats</SelectItem>
+                    <SelectItem value="cdi" className="rounded-xl">CDI</SelectItem>
+                    <SelectItem value="internship" className="rounded-xl">Stage</SelectItem>
+                    <SelectItem value="freelance" className="rounded-xl">Freelance</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-700">Niveau d'expérience</label>
+              <div className="space-y-2.5">
+                <label className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Niveau d'expérience</label>
                 <Select 
                   name="experience" 
                   value={filters.experience} 
                   onValueChange={(val) => handleFilterChange("experience", val)}
                 >
-                  <SelectTrigger className="bg-slate-50 border-slate-200">
+                  <SelectTrigger className="bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-[#635bff] text-sm h-12 sm:h-11 rounded-2xl sm:rounded-xl transition-all font-medium">
                     <SelectValue placeholder="Tous" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tous niveaux</SelectItem>
-                    <SelectItem value="junior">Junior (0-2 ans)</SelectItem>
-                    <SelectItem value="mid">Intermédiaire (2-5 ans)</SelectItem>
-                    <SelectItem value="senior">Senior (5+ ans)</SelectItem>
+                  <SelectContent className="rounded-2xl border-none shadow-xl">
+                    <SelectItem value="all" className="rounded-xl">Tous niveaux</SelectItem>
+                    <SelectItem value="junior" className="rounded-xl">Junior (0-2 ans)</SelectItem>
+                    <SelectItem value="mid" className="rounded-xl">Intermédiaire (2-5 ans)</SelectItem>
+                    <SelectItem value="senior" className="rounded-xl">Senior (5+ ans)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               
-              {/* Hidden submit button to allow Enter key submission for search */}
               <button type="submit" className="hidden" />
             </Form>
           </div>
@@ -349,30 +355,35 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
         {/* Jobs List */}
         <section className="space-y-6 relative">
           {isSearching && (
-             <div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center backdrop-blur-[1px]">
-               <Loader2 className="h-8 w-8 animate-spin text-primary" />
+             <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center backdrop-blur-[2px] rounded-3xl">
+               <div className="bg-white p-4 rounded-2xl shadow-xl flex items-center gap-3">
+                 <Loader2 className="h-6 w-6 animate-spin text-[#635bff]" />
+                 <span className="font-black text-sm uppercase tracking-widest text-slate-900">Recherche...</span>
+               </div>
              </div>
           )}
         
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-slate-600">
+          <div className="flex items-center justify-between px-2 sm:px-0">
+            <h3 className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest">
               {jobs.length} offre{jobs.length > 1 ? "s" : ""} disponible{jobs.length > 1 ? "s" : ""}
             </h3>
-            <div className="flex items-center gap-2 text-sm text-slate-500">
+            <div className="flex items-center gap-2 text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest">
               <span>Trier par:</span>
-              <span className="font-medium text-slate-900 cursor-pointer">Pertinence</span>
+              <span className="text-[#635bff] cursor-pointer hover:underline underline-offset-4 transition-all">Pertinence</span>
             </div>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-5">
             {jobs.length === 0 ? (
-                <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                    <Briefcase className="h-10 w-10 text-slate-300 mx-auto mb-3" />
-                    <h3 className="text-sm font-medium text-slate-900">Aucune offre trouvée</h3>
-                    <p className="text-xs text-slate-500 mt-1">Essayez de modifier vos filtres</p>
+                <div className="text-center py-20 bg-white rounded-[2.5rem] border-none ring-1 ring-slate-100 shadow-sm">
+                    <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+                      <Briefcase className="h-10 w-10 text-slate-200" />
+                    </div>
+                    <h3 className="text-xl font-black text-slate-900 leading-tight mb-2">Aucune offre trouvée</h3>
+                    <p className="text-sm text-slate-500 font-medium mb-8 max-w-xs mx-auto">Essayez de modifier vos filtres pour voir plus d'opportunités.</p>
                     <Button 
-                        variant="link" 
-                        className="mt-2 text-primary"
+                        variant="outline" 
+                        className="h-12 px-8 rounded-2xl border-slate-200 font-black text-sm hover:bg-slate-50 active:scale-[0.97] transition-all"
                         onClick={() => {
                             const formData = new FormData();
                             formData.set("q", "");
@@ -389,155 +400,179 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
                 jobs.map((job) => (
                   <Sheet key={job.id}>
                     <SheetTrigger asChild>
-                      <div className="group relative flex cursor-pointer flex-col gap-4 rounded-xl bg-white p-5 shadow-sm transition-all hover:shadow-md sm:flex-row sm:items-start ring-1 ring-slate-900/5 hover:ring-slate-900/10">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 text-base font-bold text-[#635bff] ring-1 ring-slate-100 group-hover:from-blue-100 group-hover:to-indigo-100">
+                      <div className="group relative flex cursor-pointer flex-col gap-4 sm:gap-6 rounded-[2rem] bg-white p-6 sm:p-7 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 sm:flex-row sm:items-start border-none ring-1 ring-slate-100 hover:ring-[#635bff]/20 active:scale-[0.98] sm:active:scale-[0.99]">
+                        <div className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 text-lg sm:text-xl font-black text-[#635bff] ring-1 ring-blue-100/50 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                           {job.company.substring(0, 2).toUpperCase()}
                         </div>
                         
-                        <div className="flex-1 space-y-2">
-                          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-start">
-                            <div>
-                              <h3 className="font-semibold text-slate-900 group-hover:text-[#635bff] transition-colors text-lg">
+                        <div className="flex-1 space-y-3 sm:space-y-4">
+                          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                            <div className="min-w-0">
+                              <h3 className="font-black text-slate-900 group-hover:text-[#635bff] transition-colors text-lg sm:text-xl leading-tight truncate">
                                 {job.title}
                               </h3>
-                              <div className="flex items-center gap-2 text-sm text-slate-500">
-                                <span className="font-medium text-slate-700">{job.company}</span>
-                                <span>•</span>
-                                <span className="flex items-center gap-1">
-                                  <MapPin className="h-3 w-3" />
+                              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-[11px] sm:text-sm font-bold text-slate-400">
+                                <span className="text-slate-900 font-black truncate max-w-[150px] sm:max-w-none">{job.company}</span>
+                                <span className="text-slate-200 hidden sm:inline">•</span>
+                                <span className="flex items-center gap-1.5 truncate">
+                                  <MapPin className="h-3.5 w-3.5 text-slate-300" />
                                   {job.location}
                                 </span>
-                                <span>•</span>
-                                <span className="text-slate-400">Il y a 2 jours</span>
+                                <span className="text-slate-200 hidden sm:inline">•</span>
+                                <span className="text-slate-300 shrink-0 uppercase tracking-widest text-[10px]">Il y a 2 j</span>
                               </div>
                             </div>
                             <Badge className={cn(
-                              "w-fit px-3 py-1 text-sm font-medium", 
-                              job.match >= 90 ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100" : 
-                              job.match >= 70 ? "bg-blue-50 text-blue-700 hover:bg-blue-100" : 
-                              "bg-amber-50 text-amber-700 hover:bg-amber-100"
+                              "w-fit px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider rounded-lg shrink-0 shadow-sm border-none", 
+                              job.match >= 90 ? "bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white" : 
+                              job.match >= 70 ? "bg-blue-50 text-[#635bff] group-hover:bg-[#635bff] group-hover:text-white" : 
+                              "bg-amber-50 text-amber-600 group-hover:bg-amber-600 group-hover:text-white"
                             )}>
-                              <Zap className="mr-1 h-3 w-3" />
+                              <Zap className="mr-1.5 h-3 w-3" />
                               {job.match}% Match
                             </Badge>
                           </div>
                           
                           <div className="flex flex-wrap gap-2 pt-1">
-                            <Badge variant="secondary" className="bg-slate-100 text-slate-600 font-normal border-0">
-                              <Briefcase className="mr-1 h-3 w-3 text-slate-400" />
+                            <Badge variant="secondary" className="bg-slate-50 text-slate-500 font-bold border-0 text-[10px] sm:text-xs px-3 py-1 rounded-lg uppercase tracking-widest">
+                              <Briefcase className="mr-2 h-3 w-3 text-slate-300" />
                               {job.contract === "cdi" ? "CDI" : job.contract === "freelance" ? "Freelance" : "Stage"}
                             </Badge>
-                            <Badge variant="secondary" className="bg-slate-100 text-slate-600 font-normal border-0">
-                              <Clock className="mr-1 h-3 w-3 text-slate-400" />
+                            <Badge variant="secondary" className="bg-slate-50 text-slate-500 font-bold border-0 text-[10px] sm:text-xs px-3 py-1 rounded-lg uppercase tracking-widest">
+                              <Clock className="mr-2 h-3 w-3 text-slate-300" />
                               {job.experience === "junior" ? "Junior" : job.experience === "mid" ? "Intermédiaire" : "Senior"}
                             </Badge>
-                            <Badge variant="secondary" className="bg-slate-100 text-slate-600 font-normal border-0">
-                              <DollarSign className="mr-1 h-3 w-3 text-slate-400" />
+                            <Badge variant="secondary" className="bg-slate-50 text-slate-500 font-bold border-0 text-[10px] sm:text-xs px-3 py-1 rounded-lg uppercase tracking-widest">
+                              <DollarSign className="mr-2 h-3 w-3 text-slate-300" />
                               45k - 55k €
                             </Badge>
                           </div>
                         </div>
 
-                        <div className="hidden sm:flex sm:flex-col sm:items-end sm:justify-between">
-                           <Button variant="ghost" size="icon" className="text-slate-400 hover:text-slate-600">
-                             <ArrowRight className="h-5 w-5" />
-                           </Button>
+                        <div className="hidden sm:flex sm:flex-col sm:items-end sm:justify-center">
+                           <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-blue-50 group-hover:text-[#635bff] transition-all">
+                             <ArrowRight className="h-6 w-6 transition-transform group-hover:translate-x-1" />
+                           </div>
                         </div>
                       </div>
                     </SheetTrigger>
                     
-                    <SheetContent className="flex flex-col h-full w-full sm:max-w-xl p-0">
-                      <div className="flex-1 overflow-y-auto p-6">
-                        <SheetHeader className="space-y-4 pb-6 border-b text-left">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                              <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 text-xl font-bold text-[#635bff] ring-1 ring-slate-100">
-                                {job.company.substring(0, 2).toUpperCase()}
-                              </div>
-                              <div>
-                                <SheetTitle className="text-xl">{job.title}</SheetTitle>
-                                <SheetDescription className="flex items-center gap-2 mt-1 text-base">
-                                  <span className="font-medium text-slate-900">{job.company}</span>
-                                  <span>•</span>
-                                  <span>{job.location}</span>
-                                </SheetDescription>
-                              </div>
+                    <SheetContent side="bottom" className="flex flex-col h-[94vh] w-full sm:h-full sm:max-w-xl p-0 border-none sm:border-l rounded-t-[2.5rem] sm:rounded-none bg-white overflow-hidden shadow-2xl">
+                      <div className="flex-1 overflow-y-auto px-6 py-8 sm:p-10 pb-40">
+                        <SheetHeader className="space-y-6 sm:space-y-8 pb-8 sm:pb-10 border-b border-slate-50 text-left">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+                            <div className="flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 text-2xl sm:text-3xl font-black text-[#635bff] ring-1 ring-blue-100/50 shadow-inner">
+                              {job.company.substring(0, 2).toUpperCase()}
                             </div>
-                            <div className="flex gap-2">
-                              <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-[#635bff]">
-                                <Share2 className="h-4 w-4" />
-                              </Button>
-                              <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-amber-500">
-                                <Bookmark className="h-4 w-4" />
-                              </Button>
+                            <div className="min-w-0 space-y-2">
+                              <SheetTitle className="text-2xl sm:text-3xl font-black leading-tight text-slate-900">{job.title}</SheetTitle>
+                              <SheetDescription className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-1 text-sm sm:text-lg font-bold">
+                                <span className="text-slate-900 font-black">{job.company}</span>
+                                <span className="text-slate-200 hidden sm:inline">•</span>
+                                <span className="flex items-center gap-2 text-slate-400">
+                                  <MapPin className="h-4 w-4 text-slate-300" />
+                                  {job.location}
+                                </span>
+                              </SheetDescription>
                             </div>
                           </div>
-                          
-                          <div className="flex flex-wrap gap-3">
-                            <Badge className={cn(
-                              "px-3 py-1 text-sm", 
-                              job.match >= 90 ? "bg-emerald-50 text-emerald-700" : 
-                              job.match >= 70 ? "bg-blue-50 text-blue-700" : 
-                              "bg-amber-50 text-amber-700"
-                            )}>
-                              {job.match}% de correspondance
-                            </Badge>
-                            <Badge variant="outline" className="border-slate-200 text-slate-700">
-                              {job.contract === "cdi" ? "CDI" : "Stage"}
-                            </Badge>
-                            <Badge variant="outline" className="border-slate-200 text-slate-700">
-                              Télétravail partiel
-                            </Badge>
+
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="flex flex-wrap gap-2.5">
+                              <Badge className={cn(
+                                "px-4 py-1.5 text-xs sm:text-sm font-black uppercase tracking-widest rounded-xl shadow-sm border-none", 
+                                job.match >= 90 ? "bg-emerald-50 text-emerald-600" : 
+                                job.match >= 70 ? "bg-blue-50 text-[#635bff]" : 
+                                "bg-amber-50 text-amber-600"
+                              )} variant="outline">
+                                <Zap className="mr-2 h-3.5 w-3.5" />
+                                {job.match}% Match
+                              </Badge>
+                              <Badge variant="secondary" className="bg-slate-50 text-slate-500 border-0 text-xs sm:text-sm px-4 py-1.5 rounded-xl font-black uppercase tracking-widest">
+                                {job.contract === "cdi" ? "CDI" : "Stage"}
+                              </Badge>
+                            </div>
+                            
+                            <div className="flex gap-2">
+                              <Button variant="outline" size="icon" className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl border-slate-200 text-slate-400 hover:text-[#635bff] hover:bg-blue-50 hover:border-blue-100 transition-all active:scale-[0.95]">
+                                <Share2 className="h-5 w-5" />
+                              </Button>
+                              <Button variant="outline" size="icon" className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl border-slate-200 text-slate-400 hover:text-amber-500 hover:bg-amber-50 hover:border-amber-100 transition-all active:scale-[0.95]">
+                                <Bookmark className="h-5 w-5" />
+                              </Button>
+                            </div>
                           </div>
 
                           <div className="pt-2">
-                            <Button variant="link" className="p-0 h-auto text-[#635bff] gap-2 text-sm" asChild>
+                            <Button variant="link" className="p-0 h-auto text-[#635bff] hover:text-[#544dc9] gap-2.5 text-sm sm:text-base font-black uppercase tracking-widest" asChild>
                               <a href="#" target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-4 w-4" />
-                                Voir l'annonce originale sur le site du recruteur
+                                <ExternalLink className="h-4.5 w-4.5" />
+                                Voir l'annonce originale
                               </a>
                             </Button>
                           </div>
                         </SheetHeader>
 
-                        <div className="py-6 space-y-8">
-                          <div className="space-y-3">
-                            <h4 className="font-semibold text-slate-900 flex items-center gap-2">
-                              <Briefcase className="h-4 w-4 text-[#635bff]" />
+                        <div className="py-8 sm:py-10 space-y-10 sm:space-y-12">
+                          <div className="space-y-5">
+                            <h4 className="font-black text-slate-900 flex items-center gap-3 text-sm sm:text-base uppercase tracking-widest">
+                              <div className="h-8 w-8 rounded-xl bg-blue-50 flex items-center justify-center">
+                                <Briefcase className="h-4.5 w-4.5 text-[#635bff]" />
+                              </div>
                               À propos du poste
                             </h4>
-                            <p className="text-sm text-slate-600 leading-relaxed">
-                              En tant que {job.title} chez {job.company}, vous rejoindrez une équipe passionnée pour travailler sur des projets innovants. Nous recherchons une personne capable de concevoir des interfaces utilisateurs performantes et accessibles.
+                            <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-medium">
+                              En tant que <span className="text-slate-900 font-black">{job.title}</span> chez <span className="text-slate-900 font-black">{job.company}</span>, vous rejoindrez une équipe passionnée pour travailler sur des projets innovants. Nous recherchons une personne capable de concevoir des interfaces utilisateurs performantes et accessibles.
                             </p>
                           </div>
 
-                          <div className="space-y-3">
-                            <h4 className="font-semibold text-slate-900 flex items-center gap-2">
-                              <CheckCircle className="h-4 w-4 text-[#635bff]" />
+                          <div className="space-y-5">
+                            <h4 className="font-black text-slate-900 flex items-center gap-3 text-sm sm:text-base uppercase tracking-widest">
+                              <div className="h-8 w-8 rounded-xl bg-emerald-50 flex items-center justify-center">
+                                <CheckCircle className="h-4.5 w-4.5 text-emerald-500" />
+                              </div>
                               Responsabilités
                             </h4>
-                            <ul className="text-sm text-slate-600 space-y-2 list-disc pl-4">
-                              <li>Développer de nouvelles fonctionnalités avec React et TypeScript</li>
-                              <li>Collaborer avec les designers et les PMs</li>
-                              <li>Optimiser les performances de l'application</li>
-                              <li>Participer aux revues de code et au mentorat</li>
+                            <ul className="space-y-4">
+                              {[
+                                "Développer de nouvelles fonctionnalités avec React et TypeScript",
+                                "Collaborer avec les designers et les PMs",
+                                "Optimiser les performances de l'application",
+                                "Participer aux revues de code et au mentorat"
+                              ].map((item, i) => (
+                                <li key={i} className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50/50 hover:bg-slate-50 transition-colors group">
+                                  <div className="h-6 w-6 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
+                                    <div className="h-2 w-2 rounded-full bg-[#635bff]" />
+                                  </div>
+                                  <span className="text-sm sm:text-base text-slate-700 font-bold leading-relaxed">{item}</span>
+                                </li>
+                              ))}
                             </ul>
                           </div>
 
-                          <div className="space-y-3">
-                            <h4 className="font-semibold text-slate-900 flex items-center gap-2">
-                              <Zap className="h-4 w-4 text-[#635bff]" />
+                          <div className="space-y-5">
+                            <h4 className="font-black text-slate-900 flex items-center gap-3 text-sm sm:text-base uppercase tracking-widest">
+                              <div className="h-8 w-8 rounded-xl bg-blue-50 flex items-center justify-center">
+                                <Zap className="h-4.5 w-4.5 text-[#635bff]" />
+                              </div>
                               Pourquoi vous ?
                             </h4>
-                            <div className="rounded-lg bg-blue-50/50 p-4 border border-blue-100">
-                               <p className="text-sm text-blue-900 mb-2 font-medium">Points forts de votre profil :</p>
-                               <ul className="text-sm text-blue-800 space-y-1">
-                                 <li className="flex items-center gap-2">
-                                   <CheckCircle className="h-3 w-3 text-blue-600" />
+                            <div className="rounded-[2rem] bg-gradient-to-br from-blue-50 to-indigo-50 p-6 sm:p-8 border border-blue-100/50 shadow-sm relative overflow-hidden group">
+                               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform duration-500">
+                                 <Zap className="h-32 w-32 text-[#635bff]" />
+                               </div>
+                               <p className="text-[10px] sm:text-xs font-black text-[#635bff] uppercase tracking-[0.2em] mb-4">Points forts de votre profil</p>
+                               <ul className="space-y-4 relative z-10">
+                                 <li className="flex items-center gap-4 text-sm sm:text-base text-slate-900 font-black">
+                                   <div className="h-8 w-8 rounded-xl bg-white shadow-sm flex items-center justify-center shrink-0">
+                                     <CheckCircle className="h-5 w-5 text-emerald-500" />
+                                   </div>
                                    Expérience solide en React (Match)
                                  </li>
-                                 <li className="flex items-center gap-2">
-                                   <CheckCircle className="h-3 w-3 text-blue-600" />
+                                 <li className="flex items-center gap-4 text-sm sm:text-base text-slate-900 font-black">
+                                   <div className="h-8 w-8 rounded-xl bg-white shadow-sm flex items-center justify-center shrink-0">
+                                     <CheckCircle className="h-5 w-5 text-emerald-500" />
+                                   </div>
                                    Connaissance de Tailwind CSS (Match)
                                  </li>
                                </ul>
@@ -546,16 +581,16 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
                         </div>
                       </div>
 
-                      <SheetFooter className="p-6 bg-white border-t mt-auto shadow-[0_-4px_10px_rgba(0,0,0,0.03)]">
-                        <div className="flex w-full gap-3">
-                          <Button variant="outline" className="flex-1 border-slate-200 hover:bg-slate-50 text-slate-700 h-11">
+                      <SheetFooter className="fixed bottom-0 left-0 right-0 p-6 pb-10 sm:static sm:p-10 bg-white/80 backdrop-blur-xl border-t border-slate-50 shadow-[0_-20px_50px_rgba(0,0,0,0.05)] z-50">
+                        <div className="flex w-full gap-4 max-w-lg mx-auto">
+                          <Button variant="outline" className="flex-1 border-slate-200 hover:bg-slate-50 text-slate-900 h-14 rounded-2xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.97]">
                             Sauvegarder
                           </Button>
                           <Button 
-                            className="flex-1 bg-[#635bff] hover:bg-[#544dc9] text-white shadow-md shadow-blue-500/20 h-11"
+                            className="flex-[2] bg-[#635bff] hover:bg-[#544dc9] text-white shadow-xl shadow-blue-500/25 h-14 rounded-2xl font-black text-sm uppercase tracking-widest transition-all active:scale-[0.97]"
                             onClick={() => handleApplyClick(job)}
                           >
-                            Postuler maintenant
+                            Postuler
                           </Button>
                         </div>
                       </SheetFooter>
@@ -567,5 +602,6 @@ function JobsContent({ data }: { data: Route.ComponentProps["loaderData"] }) {
         </section>
       </div>
     </div>
+
   );
 }

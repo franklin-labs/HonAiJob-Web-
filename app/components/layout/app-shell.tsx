@@ -75,10 +75,10 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50/50">
-      {/* Barre latérale de navigation principale */}
+      {/* Barre latérale de navigation principale (Cachée sur mobile, sauf si sidebarOpen) */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex flex-col bg-white shadow-xl shadow-slate-200/50 transition-all duration-300 ease-in-out lg:static lg:shadow-md",
+          "fixed inset-y-0 left-0 z-50 flex flex-col bg-white shadow-xl shadow-slate-200/50 transition-all duration-300 ease-in-out lg:static lg:shadow-md",
           sidebarCollapsed ? "lg:w-0 lg:overflow-hidden lg:shadow-none" : "lg:w-72",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
@@ -228,42 +228,18 @@ export function AppShell({ children }: AppShellProps) {
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
-            {/* Project Context Display / Change Project */}
-            {activeProject ? (
-              <div className="hidden items-center gap-2 rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 ring-1 ring-blue-100 sm:flex">
-                <FolderKanban className="h-4 w-4" />
-                <span className="truncate max-w-[150px]">{activeProject.name}</span>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="ml-1 h-5 w-5 text-blue-400 hover:text-blue-600"
-                  onClick={() => navigate("/projects")}
-                >
-                  <ChevronDown className="h-3 w-3" />
-                </Button>
-              </div>
-            ) : (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-9 gap-2 px-3 text-slate-600 hover:text-blue-600 border-slate-200"
-                onClick={() => navigate("/projects")}
-              >
-                <FolderKanban className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("changeProject")}</span>
-              </Button>
-            )}
-
-            {/* Language Selector */}
-            <Select value={language} onValueChange={(val: "fr" | "en") => setLanguage(val)}>
-              <SelectTrigger className="h-9 w-[100px] border-slate-200 bg-white text-xs font-medium focus:ring-blue-500">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="fr">Français</SelectItem>
-                <SelectItem value="en">English</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Language Selector - Masqué sur petit mobile */}
+            <div className="hidden xs:block">
+              <Select value={language} onValueChange={(val: "fr" | "en") => setLanguage(val)}>
+                <SelectTrigger className="h-9 w-[100px] border-slate-200 bg-white text-xs font-medium focus:ring-blue-500">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="fr">Français</SelectItem>
+                  <SelectItem value="en">English</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:bg-slate-100 hover:text-slate-700">
@@ -300,11 +276,47 @@ export function AppShell({ children }: AppShellProps) {
         </header>
 
         {/* Contenu principal de la page */}
-        <main className="flex-1 overflow-y-auto bg-slate-50/50 p-4 lg:p-8">
+        <main className="flex-1 overflow-y-auto bg-slate-50/50 p-4 pb-24 lg:p-8 lg:pb-8">
           <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500">
             {children}
           </div>
         </main>
+
+        {/* Barre de navigation native (Bottom Nav) pour mobile */}
+        <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 px-2 pb-safe pt-2 backdrop-blur-md lg:hidden">
+          <div className="flex items-center justify-around">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.to || (item.to !== "/dashboard" && location.pathname.startsWith(item.to));
+              
+              // On simplifie les labels pour la barre du bas
+              const shortLabel = item.to === "/dashboard" ? "Projet" : 
+                               item.to === "/jobs" ? "Offres" : 
+                               item.to === "/applications" ? "Suivi" : "Réglages";
+
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={cn(
+                    "flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 transition-all duration-200",
+                    isActive ? "text-blue-600" : "text-slate-500 active:scale-95"
+                  )}
+                >
+                  <div className={cn(
+                    "flex h-8 w-12 items-center justify-center rounded-full transition-colors",
+                    isActive ? "bg-blue-100/50" : "bg-transparent"
+                  )}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <span className="text-[10px] font-medium tracking-tight">
+                    {shortLabel}
+                  </span>
+                </NavLink>
+              );
+            })}
+          </div>
+        </nav>
       </div>
     </div>
   );

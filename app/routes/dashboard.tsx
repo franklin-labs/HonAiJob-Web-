@@ -122,237 +122,145 @@ function DashboardContent() {
   };
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* Project Header */}
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-8">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
-            <Link to="/projects" className="flex items-center gap-1 hover:text-blue-600 transition-colors">
-              <ArrowLeft className="h-3.5 w-3.5" />
-              {t("backToProjects")}
+    <div className="space-y-6 sm:space-y-8 pb-10 sm:pb-8 px-4 sm:px-0">
+      {/* En-tête du Dashboard */}
+      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center border-b border-slate-100 pb-6 sm:pb-8">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2 mb-1">
+            <Link to="/projects" className="group flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-[#635bff] transition-colors">
+              <ArrowLeft className="h-3 w-3 group-hover:-translate-x-0.5 transition-transform" />
+              Mes Projets
             </Link>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-blue-50 p-2 text-blue-600">
-              <FolderKanban className="h-6 w-6" />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-              {project.name}
-            </h1>
-          </div>
-          <p className="max-w-2xl text-slate-500 mt-2">
-            {project.description || "Aucune description fournie pour ce projet."}
+          <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl leading-tight">
+            {project.name}
+          </h1>
+          <p className="text-sm sm:text-base text-slate-500 font-medium leading-relaxed">
+            {project.description || "Gérez vos CV et candidatures pour ce projet."}
           </p>
         </div>
-
-        <div className="flex flex-wrap gap-3">
-           <Dialog>
-            <DialogTrigger asChild>
-              <Button className="bg-[#635bff] hover:bg-[#544dc9] text-white gap-2 rounded-full px-6 shadow-lg shadow-blue-600/20">
-                <Plus className="h-4 w-4" />
-                {t("addCv")}
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{t("addCv")}</DialogTitle>
-                <DialogDescription>
-                  Ajoutez un nouveau CV à ce projet pour l'optimiser.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleAddCv} className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="cvName">Nom du CV</Label>
-                  <Input id="cvName" name="name" placeholder="Ex: CV Développeur Senior" required />
-                </div>
-                <Button type="submit" className="w-full bg-[#635bff] hover:bg-[#544dc9] text-white">
-                  Ajouter le CV
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+        
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button asChild variant="outline" className="h-12 sm:h-11 rounded-2xl sm:rounded-full border-slate-200 font-black text-sm text-slate-600 hover:bg-slate-50 active:scale-[0.97] transition-all">
+            <Link to={`/projects/${project.id}`}>
+              <Sparkles className="mr-2 h-5 w-5 sm:h-4 sm:w-4 text-[#635bff]" />
+              Détails du projet
+            </Link>
+          </Button>
+          <Button className="h-12 sm:h-11 rounded-2xl sm:rounded-full bg-[#635bff] px-6 font-black text-sm text-white shadow-lg shadow-blue-500/20 hover:bg-[#544dc9] active:scale-[0.97] transition-all">
+            <Plus className="mr-2 h-5 w-5 sm:h-4 sm:w-4" />
+            Nouveau CV
+          </Button>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-none shadow-sm bg-white">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-400">Documents</CardTitle>
-            <FileText className="h-4 w-4 text-slate-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900">{project.cvs.length}</div>
-            <p className="text-xs text-slate-500 mt-1">CVs optimisés</p>
-          </CardContent>
-        </Card>
-        <Card className="border-none shadow-sm bg-white">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-400">Candidatures</CardTitle>
-            <Send className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900">
-              {project.cvs.reduce((acc, cv) => acc + (cv.applicationsInProgress || 0), 0)}
-            </div>
-            <p className="text-xs text-slate-500 mt-1">En cours d'envoi</p>
-          </CardContent>
-        </Card>
-        <Card className="border-none shadow-sm bg-white">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-400">Score Moyen</CardTitle>
-            <TrendingUp className="h-4 w-4 text-emerald-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900">
-              {project.cvs.length > 0 
-                ? Math.round(project.cvs.reduce((acc, cv) => acc + (cv.score || 0), 0) / project.cvs.length) 
-                : 0}%
-            </div>
-            <p className="text-xs text-slate-500 mt-1">Compatibilité ATS</p>
-          </CardContent>
-        </Card>
-        <Card className="border-none shadow-sm bg-[#635bff] text-white">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-white/70">Matching IA</CardTitle>
-            <Zap className="h-4 w-4 text-white/70" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-white/70 mt-1">Offres trouvées</p>
-          </CardContent>
-        </Card>
+      {/* Statistiques rapides */}
+      <div className="grid gap-4 sm:gap-6 grid-cols-2 lg:grid-cols-4">
+        {[
+          { label: "CV Créés", value: project.cvs.length, icon: FileText, color: "bg-blue-50 text-[#635bff]" },
+          { label: "Match Moyen", value: "84%", icon: Zap, color: "bg-emerald-50 text-emerald-600" },
+          { label: "Offres", value: "12", icon: Briefcase, color: "bg-purple-50 text-purple-600" },
+          { label: "Candidatures", value: "5", icon: Send, color: "bg-amber-50 text-amber-600" },
+        ].map((stat, i) => (
+          <Card key={i} className="border-none shadow-sm bg-white rounded-2xl overflow-hidden group hover:shadow-md transition-all">
+            <CardContent className="p-5 sm:p-6">
+              <div className="flex items-center justify-between">
+                <div className={cn("flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl transition-transform group-hover:scale-110", stat.color)}>
+                  <stat.icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                </div>
+                <span className="text-xl sm:text-2xl font-black text-slate-900">{stat.value}</span>
+              </div>
+              <p className="mt-3 text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Main Content: CV List */}
+      <div className="grid gap-6 sm:gap-8 lg:grid-cols-3">
+        {/* Liste des CV récents */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-slate-900">{t("myCvsTitle")}</h2>
-          </div>
-
-          {project.cvs.length === 0 ? (
-            <Card className="border-dashed border-slate-300 bg-slate-50/50 p-12 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 mb-4">
-                <FileText className="h-6 w-6" />
+            <h2 className="text-lg font-black text-slate-900 flex items-center gap-3">
+              <div className="h-8 w-8 rounded-xl bg-blue-50 flex items-center justify-center">
+                <FileText className="h-4.5 w-4.5 text-[#635bff]" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900">{t("noCvTitle")}</h3>
-              <p className="text-sm text-slate-500 mt-2 max-w-xs mx-auto">
-                {t("noCvDescription")}
-              </p>
-              <Button className="mt-6 bg-[#635bff] hover:bg-[#544dc9] text-white">
-                {t("uploadCv")}
-              </Button>
-            </Card>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {project.cvs.map((cv) => (
-                <Card key={cv.id} className="group overflow-hidden border-slate-200 transition-all hover:border-blue-300 hover:shadow-md bg-white">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600 transition-colors group-hover:bg-blue-600 group-hover:text-white">
-                        <FileText className="h-5 w-5" />
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <Badge variant={cv.score >= 80 ? "default" : "secondary"} className={cn("font-medium", cv.score >= 80 ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-slate-100 text-slate-600")}>
-                          {cv.score}% Score
-                        </Badge>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                          onClick={() => handleRemoveCv(cv.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+              CV du projet
+            </h2>
+            <Link to="/cvs" className="text-xs font-black text-[#635bff] hover:underline uppercase tracking-widest">Voir tout</Link>
+          </div>
+          
+          <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
+            {project.cvs.map((cv) => (
+              <Card key={cv.id} className="group relative flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-none ring-1 ring-slate-100 bg-white rounded-2xl">
+                <CardHeader className="pb-4 p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 text-slate-400 transition-all group-hover:bg-blue-50 group-hover:text-[#635bff] group-hover:scale-110 group-hover:rotate-3">
+                      <FileText className="h-7 w-7" />
                     </div>
-                    <CardTitle className="mt-4 text-lg group-hover:text-blue-700 transition-colors">{cv.name}</CardTitle>
-                    <div className="flex items-center gap-2 text-xs text-slate-500 mt-2">
-                      <Clock className="h-3 w-3" />
-                      <span>Mis à jour le {cv.lastAnalysis}</span>
+                    <Badge className="bg-emerald-50 text-emerald-600 border-none font-black text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-lg">
+                      <Zap className="mr-1 h-3 w-3 fill-emerald-600" />
+                      {cv.score}%
+                    </Badge>
+                  </div>
+                  <CardTitle className="mt-4 text-lg font-black text-slate-900 group-hover:text-[#635bff] transition-colors truncate">
+                    {cv.name}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pb-6 px-6">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Candidatures</p>
+                      <p className="text-sm font-black text-slate-900">{cv.applicationsInProgress} en cours</p>
                     </div>
-                  </CardHeader>
-                  <CardContent className="pb-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500">Candidatures</span>
-                      <span className="font-semibold text-slate-900">{cv.applicationsInProgress} en cours</span>
+                    <div className="space-y-1 text-right">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Dernière analyse</p>
+                      <p className="text-sm font-black text-slate-900">{cv.lastAnalysis}</p>
                     </div>
-                  </CardContent>
-                  <CardFooter className="bg-slate-50/50 border-t border-slate-100 p-3">
-                    <Button variant="ghost" className="w-full text-xs h-8 gap-1.5 hover:bg-white hover:text-blue-600">
-                      Voir les détails
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
+                  </div>
+                </CardContent>
+                <CardFooter className="mt-auto border-t border-slate-50 p-0">
+                  <Button variant="ghost" className="w-full h-14 rounded-none font-black text-[11px] uppercase tracking-widest text-slate-400 hover:text-[#635bff] hover:bg-blue-50/50 transition-all gap-2 group/btn" asChild>
+                    <Link to="/ai-match">
+                      Optimiser ce CV
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                    </Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         </div>
 
-        {/* Sidebar: AI Recommendations & Jobs */}
+        {/* Activité récente / Tips IA */}
         <div className="space-y-6">
-          <Card className="border-none shadow-sm bg-white overflow-hidden">
-            <CardHeader className="pb-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5" />
-                <CardTitle className="text-lg">Analyse IA du Projet</CardTitle>
-              </div>
+          <h2 className="text-lg font-black text-slate-900 flex items-center gap-3">
+            <div className="h-8 w-8 rounded-xl bg-amber-50 flex items-center justify-center">
+              <TrendingUp className="h-4.5 w-4.5 text-amber-600" />
+            </div>
+            Conseils IA
+          </h2>
+          
+          <Card className="border-none shadow-sm bg-gradient-to-br from-white to-slate-50 rounded-[2rem] overflow-hidden relative group">
+            <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 transition-transform">
+              <Sparkles className="h-20 w-20 text-[#635bff]" />
+            </div>
+            <CardHeader className="p-7">
+              <CardTitle className="text-xl font-black text-slate-900">Booster votre score</CardTitle>
+              <CardDescription className="text-sm font-bold text-slate-400 uppercase tracking-widest mt-2">Recommandation du jour</CardDescription>
             </CardHeader>
-            <CardContent className="pt-6 space-y-4">
-              <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
-                <p className="text-sm font-semibold text-blue-800 flex items-center gap-2">
-                  <Info className="h-4 w-4" />
-                  Conseil Stratégique
-                </p>
-                <p className="text-xs text-blue-700 mt-2 leading-relaxed">
-                  Basé sur la description de votre projet, nous vous suggérons d'ajouter les mots-clés 
-                  <span className="font-bold"> "Architecture Cloud"</span> et <span className="font-bold"> "DevOps"</span> à votre CV principal.
+            <CardContent className="p-7 pt-0 space-y-6">
+              <div className="flex gap-4 p-5 rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">
+                <div className="h-10 w-10 shrink-0 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <Info className="h-5 w-5 text-[#635bff]" />
+                </div>
+                <p className="text-sm font-bold text-slate-600 leading-relaxed">
+                  Ajoutez <span className="text-slate-900 font-black">"Analyse de données"</span> à vos compétences pour augmenter votre score de <span className="text-emerald-600 font-black">+12%</span> sur ce projet.
                 </p>
               </div>
               
-              <div className="space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Prochaines étapes</h4>
-                <div className="flex items-start gap-3 text-sm">
-                  <div className="h-5 w-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                    <CheckCircle2 className="h-3 w-3" />
-                  </div>
-                  <span className="text-slate-600">Optimiser le CV principal pour "Spotify"</span>
-                </div>
-                <div className="flex items-start gap-3 text-sm">
-                  <div className="h-5 w-5 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center shrink-0 mt-0.5">
-                    <div className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-                  </div>
-                  <span className="text-slate-600">Ajouter une lettre de motivation IA</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-none shadow-sm bg-white">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Offres Adaptées</CardTitle>
-                <Button variant="ghost" size="sm" className="text-xs text-[#635bff] hover:text-[#544dc9] p-0 h-auto">Voir tout</Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {[
-                { title: "Senior React Dev", company: "Stripe", match: 98 },
-                { title: "Frontend Architect", company: "Airbnb", match: 92 },
-                { title: "Lead Developer", company: "Doctolib", match: 89 }
-              ].map((job, i) => (
-                <div key={i} className="group flex items-center justify-between p-3 rounded-lg border border-slate-50 hover:border-blue-100 hover:bg-blue-50/30 transition-all cursor-pointer">
-                  <div className="space-y-1">
-                    <p className="text-sm font-bold text-slate-900 group-hover:text-blue-700 transition-colors">{job.title}</p>
-                    <p className="text-xs text-slate-500">{job.company}</p>
-                  </div>
-                  <Badge variant="outline" className="bg-white text-emerald-600 border-emerald-100">
-                    {job.match}% match
-                  </Badge>
-                </div>
-              ))}
+              <Button className="w-full h-12 rounded-2xl bg-slate-900 text-white font-black text-sm hover:bg-slate-800 transition-all active:scale-[0.97]">
+                Appliquer le conseil
+              </Button>
             </CardContent>
           </Card>
         </div>

@@ -1,10 +1,3 @@
-import type { Route } from "./+types/terms";
-
-export const meta: Route.MetaFunction = () => [
-  { title: "Conditions Générales de Vente et d'Utilisation - Honaijob" },
-  { name: "description", content: "Consultez nos CGV et CGU. Utilisation du service, abonnements, et garantie de remboursement 7 jours." },
-];
-
 export default function Terms() {
   return (
     <article className="prose prose-slate max-w-none lg:prose-lg">
